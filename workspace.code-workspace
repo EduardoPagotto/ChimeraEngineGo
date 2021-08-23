@@ -1,0 +1,68 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {},
+    "tasks": {
+        "version": "2.0.0",
+        "type": "shell",
+        "echoCommand": true,
+        "command": "go",
+        "cwd": "${workspaceFolder}",
+        "tasks": [
+            {
+                "label": "build",
+                "command": "go build -o ./bin/teste ./simples/teste.go",
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "problemMatcher": []
+            },
+            {
+                "label": "install",
+                "command": "go install -v teste.go",
+                "group": "build"
+            },
+            {
+                "label": "test",
+                "command": "go test",
+                "args": [
+                    "-v",
+                    "./.."
+                ],
+                "group": "test"
+            },
+            {
+                "label": "rungo",
+                "command": "go run -v ${workspaceRoot}/simples/teste.go",
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                }
+            }
+        ]
+    },
+    "launch": {
+        "configurations": [
+            {
+                "name": "Launch Package",
+                "type": "go",
+                "request": "launch",
+                "mode": "auto",
+                "program": "${fileDirname}"
+            },
+            {
+                "name": "Teste",
+                "type": "go",
+                "request": "launch",
+                "mode": "auto",
+                "program": "${workspaceRoot}/simples/teste.go",
+                "cwd": "${workspaceFolder}",
+            }
+        ],
+        "compounds": []
+    }
+}
