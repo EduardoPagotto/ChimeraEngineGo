@@ -14,6 +14,7 @@ func main() {
 	control := Core.NewflowControl(Core.NewClient(video))
 	control.Open()
 	control.Loop()
+	control.Close()
 
 	sdl.Log("app finalizado")
 	//video.Destroy()

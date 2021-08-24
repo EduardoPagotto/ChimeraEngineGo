@@ -12,6 +12,7 @@ type JoystickManager struct {
 func (j *JoystickManager) Initialize() {
 	if !j.Initialized {
 		sdl.InitSubSystem(sdl.INIT_JOYSTICK)
+		j.Joysticks = make(map[uint8]*JoystickState)
 	}
 
 	sdl.JoystickEventState(sdl.ENABLE)
@@ -55,62 +56,45 @@ func (j *JoystickManager) joyReleaseAll() {
 
 }
 
-func (j JoystickManager) TrackEvent(e *sdl.Event) bool {
+func (j JoystickManager) TrackEvent(e *sdl.Event) *JoystickState {
 
-	ret := false
-	// var id uint8
-	// ev := *e
+	var sel *JoystickState = nil
 
-	// switch t := ev.(type) {
-	// case *sdl.JoyAxisEvent:
-	// 	id = uint8(t.Which)
-	// case *sdl.JoyButtonEvent:
-	// 	id = uint8(t.Which)
-	// case *sdl.JoyBallEvent:
-	// 	id = uint8(t.Which)
-	// case *sdl.JoyDeviceAddedEvent:
-	// 	id = uint8(t.Which)
-	// case *sdl.JoyDeviceRemovedEvent:
-	// 	id = uint8(t.Which)
-	// case *sdl.JoyHatEvent:
-	// 	id = uint8(t.Which)
-	// default:
-	// }
+	switch t := (*e).(type) {
+	case *sdl.JoyButtonEvent:
+		sel = j.Joysticks[uint8(t.Which)]
+		sel.ButtonEvent(t)
 
-	// if ret {
-	// 	j.Joysticks[id].id = id
-	// 	j.Joysticks[id].TrackEvent()
-	// }
+	case *sdl.JoyAxisEvent:
+		sel = j.Joysticks[uint8(t.Which)]
+		sel.AxisEvent(t)
 
-	return ret
-}
+	case *sdl.JoyHatEvent:
+		sel = j.Joysticks[uint8(t.Which)]
+		sel.HatEvent(t)
 
-func (j JoystickManager) getJoystickState(id uint8) *JoystickState {
+	case *sdl.JoyBallEvent:
+		sel = j.Joysticks[uint8(t.Which)]
+		sel.BallEvent(t)
 
-	pJoy, ok := j.Joysticks[id]
-	if ok {
-		return pJoy
+	case *sdl.JoyDeviceAddedEvent:
+		sel = j.Joysticks[uint8(t.Which)]
+		sel.DeviceAddEvent(t)
+
+	case *sdl.JoyDeviceRemovedEvent:
+		sel = j.Joysticks[uint8(t.Which)]
+		sel.DeviceRemovedEvent(t)
 	}
 
-	return nil
+	return sel
 }
 
-// func (j *JoystickManager) GetStatusManager() {
-// 	for _, joy := range j.Joysticks {
-// 		joy.handle.GetStatusJoy()
-// 	}
-// }
+// func (j JoystickManager) getJoystickState(id uint8) *JoystickState {
 
-//  void TrackEvent(SDL_Event* event);
-//  inline static double AxisScale(const Sint16& value) {
-// 	 return value >= 0 ? ((double)value) / 32767.0f : ((double)value) / 32768.0f;
-//  }
-//  inline double AxisScaled(const Uint8& axis, const double& low, const double& high, const double& deadzone = 0.0f,
-// 						  const double& deadzone_at_ends = 0.0f) {
-// 	 return low + (high - low) * (Axis(axis, deadzone, deadzone_at_ends) + 1.0f) / 2.0f;
-//  }
-//  double Axis(const Uint8& axis, const double& deadzone = 0.0f, const double& deadzone_at_ends = 0.0f);
-//  bool ButtonDown(const Uint8& button);
-//  Uint8 Hat(const Uint8& hat);
-//  inline bool HatDir(const Uint8& hat, const Uint8& dir) { return Hat(hat) & dir; }
-//  void GetStatusJoy(void);
+// 	pJoy, ok := j.Joysticks[id]
+// 	if ok {
+// 		return pJoy
+// 	}
+
+// 	return nil
+// }

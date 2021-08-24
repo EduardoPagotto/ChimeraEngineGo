@@ -21,14 +21,11 @@ func (c *Client) stop() {
 
 func (c *Client) render() {
 
-	// FIXME: BUG AQUI!!!!
 	c.canvas.Before(0)
 
 	c.canvas.After(0)
 
 	c.canvas.swapWindow()
-	//c.canvas.swapWindow()
-	//fmt.Println("VVVVVV")
 }
 
 func (c *Client) keyboardEvent(k *sdl.KeyboardEvent) {
@@ -68,16 +65,14 @@ func (c *Client) userEvent(u *sdl.UserEvent) {
 	fmt.Println(" Code", u.Code)
 }
 
-// func (c *Client) joystickEvent(e *sdl.Event) {
-
-// }
-
-//func (c *Client) joystickStatus()                   {} // (JoystickManager& joy) = 0;
-
 func (c *Client) newFPS(fps uint32) {}
 
 func (c *Client) paused() bool {
 	return c.isPaused
+}
+
+func (c *Client) joystickStatusUpdate(j *JoystickState) {
+
 }
 
 func NewClient(c *CanvasGL) *Client {

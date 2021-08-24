@@ -12,8 +12,7 @@ type IEvents interface {
 	mouseMotion(m *sdl.MouseMotionEvent)
 	mouseButton(m *sdl.MouseButtonEvent)
 	userEvent(u *sdl.UserEvent)
-	//joystickEvent(e *sdl.Event)
-	//joystickStatus()  // (JoystickManager& joy) = 0;
+	joystickStatusUpdate(j *JoystickState)
 	newFPS(fps uint32)
 	windowEvent(w *sdl.WindowEvent)
 	paused() bool
@@ -68,7 +67,6 @@ func (f *FlowControl) processaGame() {
 
 	f.countFrame()
 	f.pGameClientEvents.render()
-	//f.pGameClientEvents.joystickStatus(joystickManager)
 }
 
 func (f *FlowControl) Loop() {
@@ -90,7 +88,6 @@ func (f *FlowControl) Loop() {
 				f.pGameClientEvents.keyboardEvent(t)
 			case *sdl.QuitEvent:
 				running = false
-				f.pGameClientEvents.stop()
 			case *sdl.MouseMotionEvent:
 				f.pGameClientEvents.mouseMotion(t)
 			case *sdl.MouseButtonEvent:
@@ -100,7 +97,9 @@ func (f *FlowControl) Loop() {
 			case *sdl.WindowEvent:
 				f.pGameClientEvents.windowEvent(t)
 			default:
-				f.joystickManager.TrackEvent(&f.event)
+				if joy := f.joystickManager.TrackEvent(&f.event); joy != nil {
+					f.pGameClientEvents.joystickStatusUpdate(joy)
+				}
 			}
 		}
 
@@ -122,4 +121,5 @@ func (f *FlowControl) Loop() {
 		}
 	}
 
+	f.pGameClientEvents.stop()
 }
