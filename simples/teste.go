@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/EduardoPagotto/ChimeraEngineGo/Core"
+	Core "github.com/EduardoPagotto/ChimeraEngineGo/chimera/core"
 	"github.com/veandco/go-sdl2/sdl"
 )
 
